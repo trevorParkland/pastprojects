@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # bluewaveenergy-web-gatsby-react
 
 Bluewave Energy web portal https://www.bluewaveenergy.ca/
@@ -265,3 +266,6 @@ Residential Thank You
 
 Contact us Thank you
     1. headerWithParagraph
+=======
+# pastprojects
+>>>>>>> 819a014d59af028643be98c853274aab61a48a6d
