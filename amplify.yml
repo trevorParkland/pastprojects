@@ -1,0 +1,21 @@
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - nvm install v18.6.0
+        - nvm use v18.6.0
+        - npm ci
+    build:
+      commands:
+        - nvm use v18.6.0
+        - node -v
+        - npm run clean
+        - npm run build
+  artifacts:
+    baseDirectory: public
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - node_modules/**/*

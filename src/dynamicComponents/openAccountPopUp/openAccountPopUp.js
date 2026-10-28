@@ -1,0 +1,185 @@
+import React from 'react';
+import * as Styled from './openAccountPopUpStyles';
+import constants from '../../utils/utils';
+import { graphql, useStaticQuery } from 'gatsby';
+import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
+import { BLOCKS, INLINES } from '@contentful/rich-text-types';
+import isExternalUrl, { addTrailingSlash, isExternalUrlhref } from '../../utils';
+
+const OpenAccountPopUp = ({ modalShow, handleModalShow }) => {
+  const openAccountPopUpQuery = useStaticQuery(graphql`
+    query openAccountPopUpDefault {
+      allContentfulBluewaveEnergy(
+        filter: {
+          identifier: { type: { eq: "contactCustomerCareOpenAnAccountPopUp" } }
+        }
+      ) {
+        edges {
+          node {
+            identifier {
+              type
+            }
+            title
+            slug
+            sections {
+              __typename
+              ... on ContentfulContentList {
+                id
+                title
+                type
+                list {
+                  title
+                  type
+                  header
+                  contentDetails {
+                    raw
+                  }
+                }
+              }
+              ... on ContentfulImageWithPath {
+                title
+                type
+                image {
+                  title
+                  file {
+                    url
+                    details {
+                      image {
+                        width
+                        height
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  `);
+  const propanePopUpData =
+    openAccountPopUpQuery.allContentfulBluewaveEnergy.edges[0].node.sections;
+
+  const contentList = propanePopUpData.filter((section) => {
+    return section.type === constants.COMMON.OPEN_ACCOUNT_POP_UP.DEFAULT;
+  })[0].list;
+
+  const forHomeContent = contentList.filter((section) => {
+    return section.type === constants.COMMON.OPEN_ACCOUNT_POP_UP.FOR_HOME;
+  })[0];
+
+  const forBusinessContent = contentList.filter((section) => {
+    return section.type === constants.COMMON.OPEN_ACCOUNT_POP_UP.FOR_BUSINESS;
+  })[0];
+
+  const backgroundImage = propanePopUpData.filter((section) => {
+    return (
+      section.type === constants.COMMON.OPEN_ACCOUNT_POP_UP.BACKGROUND_IMAGE
+    );
+  })[0];
+
+  const optionsHomeStyle = {
+    renderNode: {
+      [BLOCKS.PARAGRAPH]: (node, children) => (
+        <Styled.ParaText2>{children}</Styled.ParaText2>
+      ),
+      [INLINES.HYPERLINK]: (node, children) => {
+        return isExternalUrl(node.data.uri) ? (
+          <Styled.LinkStyle
+            href={
+              isExternalUrlhref(node.data.uri)
+                ? node.data.uri
+                : addTrailingSlash(process.env.GATSBY_DOMAIN_URL + node.data.uri)
+            }
+            target="_blank"
+          >
+            {children}
+          </Styled.LinkStyle>
+        ) : (
+          <Styled.LinkStyleInternal
+            href={
+              isExternalUrlhref(node.data.uri)
+                ? node.data.uri
+                : addTrailingSlash(process.env.GATSBY_DOMAIN_URL + node.data.uri)
+            }
+          >
+            {children}
+          </Styled.LinkStyleInternal>
+        );
+      },
+    },
+    renderText: (text) =>
+      text.split('\n').flatMap((text, i) => [i > 0 && <br />, text]),
+  };
+  const optionsBusinessStyle = {
+    renderNode: {
+      [BLOCKS.PARAGRAPH]: (node, children) => (
+        <Styled.ParaText2>{children}</Styled.ParaText2>
+      ),
+      [INLINES.HYPERLINK]: (node, children) => {
+        return isExternalUrl(node.data.uri) ? (
+          <Styled.LinkStyle
+            href={
+              isExternalUrlhref(node.data.uri)
+                ? node.data.uri
+                :addTrailingSlash(process.env.GATSBY_DOMAIN_URL + node.data.uri)
+            }
+            target="_blank"
+          >
+            {children}
+          </Styled.LinkStyle>
+        ) : (
+          <Styled.LinkStyleInternal
+            href={
+              isExternalUrlhref(node.data.uri)
+                ? node.data.uri
+                : addTrailingSlash(process.env.GATSBY_DOMAIN_URL + node.data.uri)
+            }
+          >
+            {children}
+          </Styled.LinkStyleInternal>
+        );
+      },
+    },
+    renderText: (text) =>
+      text.split('\n').flatMap((text, i) => [i > 0 && <br />, text]),
+  };
+
+  return (
+    <>
+      <Styled.MainModal
+        show={modalShow}
+        onHide={() => handleModalShow(false)}
+        size="lg"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Styled.CloseImage
+          onClick={() => {
+            handleModalShow(false);
+          }}
+        />
+        <Styled.CustomerSelect $imageUrl={backgroundImage?.image?.file?.url}>
+          <Styled.RowWrapper>
+            <Styled.Column xs={12} md={6}>
+              <div>{forHomeContent.header}</div>
+              {documentToReactComponents(
+                JSON.parse(forHomeContent?.contentDetails?.raw),
+                optionsHomeStyle
+              )}
+            </Styled.Column>
+            <Styled.Column xs={12} md={6}>
+              <div>{forHomeContent.header}</div>
+              {documentToReactComponents(
+                JSON.parse(forBusinessContent?.contentDetails?.raw),
+                optionsBusinessStyle
+              )}
+            </Styled.Column>
+          </Styled.RowWrapper>
+        </Styled.CustomerSelect>
+      </Styled.MainModal>
+    </>
+  );
+};
+export default OpenAccountPopUp;

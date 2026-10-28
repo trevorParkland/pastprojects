@@ -1,0 +1,62 @@
+{
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true
+  },
+  "extends": [],
+
+  "parserOptions": {
+    "ecmaFeatures": {
+      "modules": true,
+      "jsx": true
+    },
+    "ecmaVersion": 12,
+    "sourceType": "module"
+  },
+  "plugins": [],
+  "rules": {
+    "no-unused-vars": [
+      "off",
+      {
+        "ignoreRestSiblings": true
+      }
+    ],
+    "react/display-name": "off",
+    "no-console": "off",
+    "react-hooks/rules-of-hooks": "off",
+    "react-hooks/exhaustive-deps": "off",
+    "react/jsx-no-useless-fragment": "off",
+    "simple-import-sort/imports": "off",
+    "simple-import-sort/exports": "off",
+    "sort-imports": "off",
+    "import/first": "off",
+    "import/order": "off",
+    "import/extensions": "off",
+    "import/no-extraneous-dependencies": [
+      "off",
+      {
+        "devDependencies": true,
+        "packageDir": "./"
+      }
+    ],
+    "curly": "off",
+    "max-lines": [
+      1,
+      {
+        "max": 1500,
+        "skipBlankLines": true,
+        "skipComments": true
+      }
+    ],
+    "react/prop-types": "off",
+    "react/react-in-jsx-scope": "off",
+    "react/jsx-key": "off",
+    "no-var": "off",
+    "prefer-const": "off",
+    "import/newline-after-import": "off",
+    "no-empty-function": "off",
+    "no-empty": "off",
+    "import/no-duplicates": "off"
+  }
+}
